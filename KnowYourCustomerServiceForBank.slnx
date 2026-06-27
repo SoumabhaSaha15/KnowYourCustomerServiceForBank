@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="knowyourcustomerserviceforbank.client/knowyourcustomerserviceforbank.client.esproj">
+    <Build />
+    <Deploy />
+  </Project>
+  <Project Path="KnowYourCustomerServiceForBank.Server/KnowYourCustomerServiceForBank.Server.csproj" />
+</Solution>

@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "dgSpecHash": "BvNcJ/n1TZk=",
+  "success": false,
+  "projectFilePath": "d:\\DOTNET\\KnowYourCustomerServiceForBank\\knowyourcustomerserviceforbank.client\\knowyourcustomerserviceforbank.client.esproj",
+  "expectedPackageFiles": [],
+  "logs": [
+    {
+      "code": "NU1012",
+      "level": "Error",
+      "message": "Platform version is not present for one or more target frameworks, even though they have specified a platform: net6.0-none",
+      "projectPath": "d:\\DOTNET\\KnowYourCustomerServiceForBank\\knowyourcustomerserviceforbank.client\\knowyourcustomerserviceforbank.client.esproj",
+      "filePath": "d:\\DOTNET\\KnowYourCustomerServiceForBank\\knowyourcustomerserviceforbank.client\\knowyourcustomerserviceforbank.client.esproj",
+      "targetGraphs": []
+    }
+  ]
+}

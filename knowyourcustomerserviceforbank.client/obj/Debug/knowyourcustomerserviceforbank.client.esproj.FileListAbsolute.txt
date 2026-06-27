@@ -1,0 +1,1 @@
+D:\DOTNET\KnowYourCustomerServiceForBank\knowyourcustomerserviceforbank.client\obj\Debug\knowyourcustomerserviceforbank.client.esproj.CoreCompileInputs.cache
