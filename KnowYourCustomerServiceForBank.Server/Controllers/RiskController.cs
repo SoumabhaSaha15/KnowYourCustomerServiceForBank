@@ -1,6 +1,9 @@
+using Microsoft.AspNetCore.Mvc;
 namespace KnowYourCustomerServiceForBank.Server.Controllers;
 
-public class RiskController
+[ApiController]
+[Route("[controller]")]
+public class RiskController : ControllerBase
 {
-    
+
 }

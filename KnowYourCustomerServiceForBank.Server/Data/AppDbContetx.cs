@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
 using KnowYourCustomerServiceForBank.Server.Models;
 namespace KnowYourCustomerServiceForBank.Server.Data;
 
@@ -9,24 +8,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
   {
     base.OnModelCreating(modelBuilder);
     var userEntity = modelBuilder.Entity<User>();
-    #region AdminDataSeeding
-    // User adminUser = new()
-    // {
-    //   UserId = 1,
-    //   FullName = "Admin",
-    //   Email = "admin@kycflow.com",
-    //   Password = "admin123", // In a real application, ensure to hash passwords securely
-    //   UserRole = UserRoleOptions.ADMIN,
-    //   OnboardingStatus = OnboardingStatusOptions.NOT_APPLICABLE,
-    //   IsActive = true,
-    // };
-
-    // PasswordHasher<User> hasher = new();
-    // adminUser.Password = hasher.HashPassword(adminUser, adminUser.Password);
-
-    // userEntity.HasData(adminUser);
-    #endregion
-
     #region UserTableEnumToStringConversion
     userEntity
       .Property(user => user.UserRole)

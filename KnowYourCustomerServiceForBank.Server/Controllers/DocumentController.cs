@@ -1,6 +1,9 @@
+using Microsoft.AspNetCore.Mvc;
 namespace KnowYourCustomerServiceForBank.Server.Controllers;
 
-public class DocumentController
+[ApiController]
+[Route("[controller]")]
+public class DocumentController(ILogger<DocumentController> logger) : ControllerBase
 {
-    
+
 }

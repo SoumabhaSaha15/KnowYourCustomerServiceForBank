@@ -1,6 +1,11 @@
+using Microsoft.AspNetCore.Mvc;
 namespace KnowYourCustomerServiceForBank.Server.Controllers;
 
-public class ComplianceController
+[ApiController]
+[Route("[controller]")]
+public class ComplianceController : ControllerBase
 {
-    
+
 }
+
+
