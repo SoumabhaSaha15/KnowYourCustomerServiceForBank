@@ -1,12 +1,15 @@
-namespace KnowYourCustomerServiceForBank.Server.Models;
-
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using KnowYourCustomerServiceForBank.Server.Interfaces;
+namespace KnowYourCustomerServiceForBank.Server.Models;
 
 public enum OnboardingStatusOptions
 {
   NEW,
   IN_PROGRESS,
-  COMPLETED
+  COMPLETED,
+  NOT_APPLICABLE
 }
 
 public enum UserRoleOptions
@@ -16,40 +19,58 @@ public enum UserRoleOptions
   KYC_OFFICER,
   COMPLIANCE_OFFICER
 }
-public class User
+[Index(nameof(Email), IsUnique = true)]
+[Index(nameof(PhoneNumber), IsUnique = true)]
+public class User : ITrackable
 {
   [Key]
   public int UserId { get; set; }
 
   [Required]
-  [StringLength(64)]
-  [RegularExpression(@"^[a-zA-Z0-9]+$", ErrorMessage = "Username can only contain letters and numbers.")]
-  public string FullName { get; set; } = string.Empty;
+  [StringLength(100, MinimumLength = 2)]
+  [RegularExpression(@"^[a-zA-Z\s'.\-]+$", ErrorMessage = "Name contains invalid characters.")]
+  public required string FullName { get; set; }
 
   [Required]
+  [StringLength(254)]
   [EmailAddress]
   public required string Email { get; set; }
 
-  [Required]
-  [StringLength(15)]
-  [RegularExpression(@"^\+?[0-9]{10,15}$", ErrorMessage = "Phone number must be between 10 and 15 digits.")]
-  public required string PhoneNumber { get; set; }
+  [StringLength(20)]
+  [RegularExpression(@"^\+?[1-9]\d{1,14}$", ErrorMessage = "Phone number must be valid.")]
+  public string? PhoneNumber { get; set; }
+
+  [StringLength(255)]
+  [RegularExpression(@"^[a-zA-Z\s'.\-]+$", ErrorMessage = "Address contains invalid characters.")]
+  public string? Address { get; set; }
 
   [Required]
-  [StringLength(64, MinimumLength = 8, ErrorMessage = "Password must be at least 8 characters long.")]
-  public string PasswordHash { get; set; } = string.Empty;
+  [StringLength(256)]
+  public required string Password { get; set; }
 
-  public OnboardingStatusOptions OnboardingStatus { get; set; } = OnboardingStatusOptions.NEW;
+  [Required]
+  public required OnboardingStatusOptions OnboardingStatus { get; set; }
+
+  public DateOnly? DateOfBirth { get; set; }
 
   public UserRoleOptions UserRole { get; set; } = UserRoleOptions.CUSTOMER;
+
+  public bool IsActive { get; set; } = false; // Default to false so seeded officers cannot log in until activated
 
   public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
   public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
-  [Required]
-  public DateTime DateOfBirth { get; set; }
+  [ValidateNever]
+  public IEnumerable<Document> Documents { get; set; } = [];
 
-  public bool IsActive { get; set; } = false;
+  [ValidateNever]
+  public IEnumerable<Account> Accounts { get; set; } = [];
+
+  [ValidateNever]
+  public IEnumerable<AuditLog> AuditLogs { get; set; } = [];
+
+  [ValidateNever]
+  public RiskProfile? RiskProfile { get; set; } = null;
 
 }

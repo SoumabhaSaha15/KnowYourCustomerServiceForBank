@@ -42,8 +42,9 @@ function LandingPage() {
       sx={{
         bgcolor: "background.default",
         color: "text.primary",
-        background:
-          "radial-gradient(circle at top left, color-mix(in srgb, var(--mui-palette-primary-main, #3b82f6) 20%, transparent), transparent 35%), linear-gradient(135deg, var(--mui-palette-background-default, #020617) 0%, var(--mui-palette-background-paper, #111827) 45%, var(--mui-palette-background-default, #020617) 100%)",
+        background: (theme) => theme.palette.mode === "dark"
+          ? `radial-gradient(circle at top left, color-mix(in srgb, ${theme.palette.primary.main} 20%, transparent), transparent 35%),linear-gradient(135deg, ${theme.palette.background.default} 0%, ${theme.palette.background.paper} 45%, ${theme.palette.background.default} 100%)`
+          : `radial-gradient(circle at top left, color-mix(in srgb, ${theme.palette.primary.main} 10%, transparent), transparent 35%),linear-gradient(135deg, ${theme.palette.background.default} 0%, ${theme.palette.background.paper} 45%, ${theme.palette.background.default} 100%)`,
       }}
     >
       {/* ── Navbar ── */}
@@ -97,7 +98,7 @@ function LandingPage() {
                 key={section}
                 // component="a"
                 href={`#${section}`}
-                className="capitalize no-underline transition-colors"
+                className="capitalize transition-colors"
                 sx={{
                   color: "text.secondary",
                   // bgcolor: "primary.contrastText",

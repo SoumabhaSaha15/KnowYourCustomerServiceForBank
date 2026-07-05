@@ -77,7 +77,7 @@ CREATE TABLE User (
     onboardingStatus VARCHAR(20) CHECK (onboardingStatus IN ('NEW', 'IN_PROGRESS', 'COMPLETED'))
 );
 
-CREATE TABLE KycDocument (
+CREATE TABLE Document (
     documentId INT IDENTITY(1,1) PRIMARY KEY,
     userId INT,
     documentType VARCHAR(50),
