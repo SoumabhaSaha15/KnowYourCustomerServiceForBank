@@ -1,8 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using KnowYourCustomerServiceForBank.Server.Data;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using KnowYourCustomerServiceForBank.Server.Models;
 using KnowYourCustomerServiceForBank.Server.Services;
 using KnowYourCustomerServiceForBank.Server.Repositories;
-// using Swashbuckle.AspNetCore.SwaggerUI;
+using System.Security.Claims;
 
 namespace KnowYourCustomerServiceForBank.Server
 {
@@ -28,19 +30,31 @@ namespace KnowYourCustomerServiceForBank.Server
             // 2. Register Session State Services
             builder.Services.AddSession(options =>
             {
-                options.IdleTimeout = TimeSpan.FromMinutes(20); // Session expiration length
+                options.IdleTimeout = TimeSpan.FromDays(1); // Session expiration length
                 options.Cookie.HttpOnly = true; // Mitigates XSS security vulnerabilities
                 options.Cookie.IsEssential = true; // Ensures cookie functions regardless of user consent
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Forces HTTPS delivery channels
             });
+
             builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             builder.Services.AddScoped<ICustomerService, CustomerService>();
-
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
-
+            builder.Services
+                .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options => { options.LoginPath = "/user-login"; });
+            builder.Services.AddAuthorizationBuilder()
+                .AddPolicy("StaffOnly", policy =>
+                    policy.RequireClaim(
+                        ClaimTypes.Role,
+                        UserRoleOptions.ADMIN.ToString(),
+                        UserRoleOptions.KYC_OFFICER.ToString(),
+                        UserRoleOptions.COMPLIANCE_OFFICER.ToString()
+                    )
+                );
             var app = builder.Build();
+            // Chain the next policy cleanly right underneath it
 
             app.UseDefaultFiles();
             app.MapStaticAssets();

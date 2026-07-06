@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 namespace KnowYourCustomerServiceForBank.Server.Repositories;
 
 public interface IRepository<T> where T : class
@@ -13,4 +14,6 @@ public interface IRepository<T> where T : class
   void Delete(T entity);
 
   Task SaveChangesAsync();
+
+  Task<T?> GetByConditionAsync(Expression<Func<T, bool>> predicate);
 }
