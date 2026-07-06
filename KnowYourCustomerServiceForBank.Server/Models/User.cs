@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using KnowYourCustomerServiceForBank.Server.Interfaces;
@@ -46,13 +47,16 @@ public class User : ITrackable
 
   [Required]
   [StringLength(256)]
-  public required string Password { get; set; }
+  [JsonIgnore]
+  public string Password { get; set; } = null!;
 
   [Required]
+  [JsonConverter(typeof(JsonStringEnumConverter))]
   public required OnboardingStatusOptions OnboardingStatus { get; set; }
 
   public DateOnly? DateOfBirth { get; set; }
 
+  [JsonConverter(typeof(JsonStringEnumConverter))]
   public UserRoleOptions UserRole { get; set; } = UserRoleOptions.CUSTOMER;
 
   public bool IsActive { get; set; } = false; // Default to false so seeded officers cannot log in until activated
@@ -62,15 +66,19 @@ public class User : ITrackable
   public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
   [ValidateNever]
+  [JsonIgnore]
   public IEnumerable<Document> Documents { get; set; } = [];
 
   [ValidateNever]
+  [JsonIgnore]
   public IEnumerable<Account> Accounts { get; set; } = [];
 
   [ValidateNever]
+  [JsonIgnore]
   public IEnumerable<AuditLog> AuditLogs { get; set; } = [];
 
   [ValidateNever]
+  [JsonIgnore]
   public RiskProfile? RiskProfile { get; set; } = null;
 
 }

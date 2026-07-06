@@ -1,10 +1,10 @@
+using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using KnowYourCustomerServiceForBank.Server.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using KnowYourCustomerServiceForBank.Server.Models;
 using KnowYourCustomerServiceForBank.Server.Services;
 using KnowYourCustomerServiceForBank.Server.Repositories;
-using System.Security.Claims;
 
 namespace KnowYourCustomerServiceForBank.Server
 {
@@ -13,7 +13,6 @@ namespace KnowYourCustomerServiceForBank.Server
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
             // Add services to the container.
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
@@ -37,14 +36,15 @@ namespace KnowYourCustomerServiceForBank.Server
             });
 
             builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-            builder.Services.AddScoped<ICustomerService, CustomerService>();
+            builder.Services.AddScoped<ILoginService, LoginService>();
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
             builder.Services
                 .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options => { options.LoginPath = "/user-login"; });
-            builder.Services.AddAuthorizationBuilder()
+            builder.Services
+                .AddAuthorizationBuilder()
                 .AddPolicy("StaffOnly", policy =>
                     policy.RequireClaim(
                         ClaimTypes.Role,

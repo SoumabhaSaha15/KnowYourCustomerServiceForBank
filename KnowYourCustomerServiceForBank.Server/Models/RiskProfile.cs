@@ -1,5 +1,5 @@
+using System.Text.Json.Serialization;
 using System.ComponentModel.DataAnnotations;
-// using System.ComponentModel.DataAnnotations.Schema;
 using KnowYourCustomerServiceForBank.Server.Interfaces;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 namespace KnowYourCustomerServiceForBank.Server.Models;
@@ -17,6 +17,7 @@ public class RiskProfile : ITrackable
 
   public int UserId { get; set; }
 
+  [JsonConverter(typeof(JsonStringEnumConverter))]
   public RiskLevelOptions RiskLevel { get; set; } = RiskLevelOptions.LOW; // e.g., Low, Medium, High
 
   public double? Score { get; set; } // e.g., List of risk factors identified

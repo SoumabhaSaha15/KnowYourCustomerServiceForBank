@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using KnowYourCustomerServiceForBank.Server.Interfaces;
@@ -28,6 +29,7 @@ public class AuditLog : ITrackable
   public int UserId { get; set; }
 
   [Required]
+  [JsonConverter(typeof(JsonStringEnumConverter))]
   public required AuditActionOptions Action { get; set; }
 
   [Required]

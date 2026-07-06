@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using KnowYourCustomerServiceForBank.Server.Models;
 using KnowYourCustomerServiceForBank.Server.ViewModels;
@@ -12,11 +13,15 @@ class LoginService(IRepository<User> userRepo, ILogger<LoginService> logger) : I
 
   private readonly ILogger<LoginService> _logger = logger;
 
+  private static readonly PasswordHasher<User> _hasher = new();
+
   public async Task<User?> FetchUser(UserLogin model)
   {
     User? user = await _userRepo.GetByConditionAsync(u => u.Email == model.Email);
-
-    return null;
+    if (user == null) return null;
+    var result = _hasher.VerifyHashedPassword(user, user.Password, model.Password);
+    if (result == PasswordVerificationResult.Failed) return null;
+    else return user;
   }
 
   public ClaimsPrincipal BuildPrincipal(User user)

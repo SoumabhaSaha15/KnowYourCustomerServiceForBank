@@ -1,5 +1,5 @@
+using System.Text.Json.Serialization;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using KnowYourCustomerServiceForBank.Server.Interfaces;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 namespace KnowYourCustomerServiceForBank.Server.Models;
@@ -29,8 +29,10 @@ public class Account : ITrackable
   [Key]
   public int AccountId { get; set; }
 
+  [JsonConverter(typeof(JsonStringEnumConverter))]
   public AccountTypeOptions AccountType { get; set; } = AccountTypeOptions.SAVINGS;
 
+  [JsonConverter(typeof(JsonStringEnumConverter))]
   public AccountStatusOptions AccountStatus { get; set; } = AccountStatusOptions.PENDING_APPROVAL;
 
   public int UserId { get; set; }
