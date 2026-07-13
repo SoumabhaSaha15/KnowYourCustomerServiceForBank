@@ -29,10 +29,10 @@ public class Account : ITrackable
   [Key]
   public int AccountId { get; set; }
 
-  [JsonConverter(typeof(JsonStringEnumConverter))]
+  // [JsonConverter(typeof(JsonStringEnumConverter))]
   public AccountTypeOptions AccountType { get; set; } = AccountTypeOptions.SAVINGS;
 
-  [JsonConverter(typeof(JsonStringEnumConverter))]
+  // [JsonConverter(typeof(JsonStringEnumConverter))]
   public AccountStatusOptions AccountStatus { get; set; } = AccountStatusOptions.PENDING_APPROVAL;
 
   public int UserId { get; set; }

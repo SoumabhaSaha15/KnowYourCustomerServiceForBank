@@ -29,7 +29,7 @@ public class AuditLog : ITrackable
   public int UserId { get; set; }
 
   [Required]
-  [JsonConverter(typeof(JsonStringEnumConverter))]
+  // [JsonConverter(typeof(JsonStringEnumConverter))]
   public required AuditActionOptions Action { get; set; }
 
   [Required]

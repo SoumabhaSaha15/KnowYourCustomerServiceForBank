@@ -17,7 +17,7 @@ public class RiskProfile : ITrackable
 
   public int UserId { get; set; }
 
-  [JsonConverter(typeof(JsonStringEnumConverter))]
+  // [JsonConverter(typeof(JsonStringEnumConverter))]
   public RiskLevelOptions RiskLevel { get; set; } = RiskLevelOptions.LOW; // e.g., Low, Medium, High
 
   public double? Score { get; set; } // e.g., List of risk factors identified

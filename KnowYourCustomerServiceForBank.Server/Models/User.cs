@@ -51,12 +51,12 @@ public class User : ITrackable
   public string Password { get; set; } = null!;
 
   [Required]
-  [JsonConverter(typeof(JsonStringEnumConverter))]
+  // [JsonConverter(typeof(JsonStringEnumConverter))]
   public required OnboardingStatusOptions OnboardingStatus { get; set; }
 
   public DateOnly? DateOfBirth { get; set; }
 
-  [JsonConverter(typeof(JsonStringEnumConverter))]
+  // [JsonConverter(typeof(JsonStringEnumConverter))]
   public UserRoleOptions UserRole { get; set; } = UserRoleOptions.CUSTOMER;
 
   public bool IsActive { get; set; } = false; // Default to false so seeded officers cannot log in until activated

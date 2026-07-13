@@ -31,13 +31,13 @@ public class Document : ITrackable
   public int UserId { get; set; }
 
   [Required]
-  [JsonConverter(typeof(JsonStringEnumConverter))]
+  // [JsonConverter(typeof(JsonStringEnumConverter))]
   public required DocumentTypeOptions DocumentType { get; set; }
 
   [Required]
   public required string FilePath { get; set; }
 
-  [JsonConverter(typeof(JsonStringEnumConverter))]
+  // [JsonConverter(typeof(JsonStringEnumConverter))]
   public DocumentVerificationStatusOptions DocumentVerificationStatus { get; set; } = DocumentVerificationStatusOptions.PENDING;
 
   public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
