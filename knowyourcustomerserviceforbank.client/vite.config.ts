@@ -1,11 +1,11 @@
 import fs from 'fs';
 import path from 'path';
 import { env } from 'process';
-import { defineConfig } from 'vite';
+import { devtools } from "@tanstack/devtools-vite";
+import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import child_process from 'child_process';
 import tailwindcss from '@tailwindcss/vite';
-import { fileURLToPath, URL } from 'node:url';
 import { tanstackRouter } from '@tanstack/router-vite-plugin';
 const baseFolder =
     env.APPDATA !== undefined && env.APPDATA !== ''
@@ -38,27 +38,38 @@ const target = env.ASPNETCORE_HTTPS_PORT ? `https://localhost:${env.ASPNETCORE_H
     env.ASPNETCORE_URLS ? env.ASPNETCORE_URLS.split(';')[0] : 'https://localhost:7016';
 
 // https://vitejs.dev/config/
-export default defineConfig({
-    plugins: [tanstackRouter({
-        target: 'react',
-        autoCodeSplitting: true,
-    }), react(), tailwindcss()],
-    resolve: {
-        alias: {
-            '@': fileURLToPath(new URL('./src', import.meta.url))
-        }
-    },
-    server: {
-        proxy: {
-            '^/weatherforecast': {
-                target,
-                secure: false
+export default defineConfig(({ mode }) => {
+    const loaded_env = loadEnv(mode, process.cwd(), '');
+    return {
+        plugins: [
+            devtools({
+                enhancedLogs: { enabled: true },
+                logging: true,
+                removeDevtoolsOnBuild: true,
+            }),
+            tanstackRouter({
+                target: 'react',
+                autoCodeSplitting: true,
+            }), react(), tailwindcss()],
+        resolve: {
+            alias: {
+                '@': path.resolve('./src'),
+                // '@': fileURLToPath(new URL('./src', import.meta.url))
             }
         },
-        port: parseInt(env.DEV_SERVER_PORT || '57976'),
-        https: {
-            key: fs.readFileSync(keyFilePath),
-            cert: fs.readFileSync(certFilePath),
+        server: {
+            proxy: {
+                '^/api': {
+                    target,
+                    secure: false,
+                    rewrite: (path) => path.replace(/^\/api/, ""),
+                }
+            },
+            port: parseInt(loaded_env.DEV_SERVER_PORT),
+            https: {
+                key: fs.readFileSync(keyFilePath),
+                cert: fs.readFileSync(certFilePath),
+            }
         }
     }
 })

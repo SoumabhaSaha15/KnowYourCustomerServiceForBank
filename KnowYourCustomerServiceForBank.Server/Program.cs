@@ -1,9 +1,13 @@
+using System.Reflection; // REQUIRED for GetCustomAttribute
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Antiforgery;
 using KnowYourCustomerServiceForBank.Server.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using KnowYourCustomerServiceForBank.Server.Models;
-using KnowYourCustomerServiceForBank.Server.Services;
+using KnowYourCustomerServiceForBank.Server.Filters;
+// using KnowYourCustomerServiceForBank.Server.Services;
+using KnowYourCustomerServiceForBank.Server.Annotations;
 using KnowYourCustomerServiceForBank.Server.Repositories;
 
 namespace KnowYourCustomerServiceForBank.Server
@@ -14,14 +18,22 @@ namespace KnowYourCustomerServiceForBank.Server
         {
             var builder = WebApplication.CreateBuilder(args);
             // Add services to the container.
+            // using KnowYourCustomerServiceForBank.Server.Annotations;
+
+            builder.Services.Scan(scan => scan
+                .FromAssemblies(typeof(Program).Assembly)
+                .AddClasses(classes => classes.WithAttribute<ServiceLifetimeAttribute>())
+                    .AsImplementedInterfaces()
+                    .WithLifetime(type =>
+                        type.GetCustomAttribute<ServiceLifetimeAttribute>()?.Lifetime ?? ServiceLifetime.Scoped)
+            );
+
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
             );
             builder.Services.AddDistributedSqlServerCache(options =>
             {
-                options.ConnectionString = builder.Configuration.GetConnectionString(
-                    "DefaultConnection"
-                );
+                options.ConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
                 options.SchemaName = "dbo";
                 options.TableName = "SessionCache";
             });
@@ -36,17 +48,39 @@ namespace KnowYourCustomerServiceForBank.Server
             });
 
             builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-            builder.Services.AddScoped<ILoginService, LoginService>();
-            builder.Services.AddControllers()
-            .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
-    }); ;
+            builder.Services.AddScoped<AntiforgeryValidationFilter>();
+
+            builder.Services.AddControllers(options =>
+            {
+                // Resolves AntiforgeryValidationFilter from DI for every request
+                options.Filters.Add<AntiforgeryValidationFilter>();
+            })
+            .AddJsonOptions(options => { options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter()); });
+            // builder.Services.AddScoped<ILoginService, LoginService>();
+            // builder.Services.AddControllers()
+
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
             builder.Services
                 .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options => { options.LoginPath = "/user-login"; });
+                .AddCookie(options =>
+                {
+                    options.Events.OnRedirectToLogin = (context) =>
+                    {
+                        context.Response.StatusCode = 401; // Unauthorized
+                        return Task.CompletedTask;
+                    };
+                    options.Events.OnRedirectToAccessDenied = (context) =>
+                    {
+                        context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                        return Task.CompletedTask;
+                    };
+                    options.Cookie.HttpOnly = true; // Protect against XSS
+                    options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // HTTPS only
+                    options.Cookie.SameSite = SameSiteMode.Lax; // Protect against CSRF
+                    options.ExpireTimeSpan = TimeSpan.FromHours(8); // Set reasonable expiration
+                    options.SlidingExpiration = true;
+                });
             builder.Services
                 .AddAuthorizationBuilder()
                 .AddPolicy("StaffOnly", policy =>
@@ -57,8 +91,11 @@ namespace KnowYourCustomerServiceForBank.Server
                         UserRoleOptions.COMPLIANCE_OFFICER.ToString()
                     )
                 );
+            builder.Services.AddAntiforgery(options =>
+                {
+                    options.HeaderName = "X-XSRF-TOKEN"; // Common header name for SPAs / Axios
+                });
             var app = builder.Build();
-            // Chain the next policy cleanly right underneath it
 
             app.UseDefaultFiles();
             app.MapStaticAssets();
@@ -70,11 +107,29 @@ namespace KnowYourCustomerServiceForBank.Server
             }
 
             app.UseHttpsRedirection();
+            app.UseRouting();
+
+            // app.Use(async (context, next) =>
+            //     {
+            //         var antiforgery = context.RequestServices.GetRequiredService<IAntiforgery>();
+            //         var tokens = antiforgery.GetAndStoreTokens(context);
+
+            //         // HttpOnly MUST be false so React/Axios/Postman can read it
+            //         context.Response.Cookies.Append("XSRF-TOKEN", tokens.RequestToken!, new CookieOptions
+            //         {
+            //             HttpOnly = false,
+            //             Secure = true,
+            //             SameSite = SameSiteMode.Lax
+            //         });
+
+            //         await next(context);
+            //     });
             app.UseSession();
+            app.UseAuthentication();
             app.UseAuthorization();
+            app.UseAntiforgery();
 
             app.MapControllers();
-
             app.MapFallbackToFile("/index.html");
 
             app.Run();

@@ -2,9 +2,9 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+// using KnowYourCustomerServiceForBank.Server.Filters;
 using KnowYourCustomerServiceForBank.Server.Services;
 using KnowYourCustomerServiceForBank.Server.ViewModels;
-
 namespace KnowYourCustomerServiceForBank.Server.Controllers;
 
 [ApiController]
@@ -13,6 +13,11 @@ public class UserLoginController(ILogger<UserLoginController> logger, ILoginServ
 {
   private readonly ILogger<UserLoginController> _logger = logger;
   private readonly ILoginService _loginService = loginService;
+  [HttpGet]
+  public IActionResult InitializeCookie()
+  {
+    return Ok(new { message = "CSRF initialized." });
+  }
   [HttpPost]
   public async Task<IActionResult> Index([FromBody] UserLogin model)
   {

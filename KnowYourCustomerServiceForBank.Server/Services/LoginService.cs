@@ -3,11 +3,14 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using KnowYourCustomerServiceForBank.Server.Models;
 using KnowYourCustomerServiceForBank.Server.ViewModels;
+using KnowYourCustomerServiceForBank.Server.Annotations;
 using KnowYourCustomerServiceForBank.Server.Repositories;
 
 namespace KnowYourCustomerServiceForBank.Server.Services;
 
-class LoginService(IRepository<User> userRepo, ILogger<LoginService> logger) : ILoginService
+
+[ServiceLifetime(ServiceLifetime.Scoped)]
+public class LoginService(IRepository<User> userRepo, ILogger<LoginService> logger) : ILoginService
 {
   private readonly IRepository<User> _userRepo = userRepo;
 
