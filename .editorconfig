@@ -1,0 +1,12 @@
+# This is the top-most .editorconfig file
+root = true
+
+# Settings for ts files
+[*.ts]
+indent_style = space
+indent_size = 2
+
+# Settings for c# files
+[*.cs]
+indent_style = space
+indent_size = 2
