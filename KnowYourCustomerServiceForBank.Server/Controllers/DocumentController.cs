@@ -5,5 +5,5 @@ namespace KnowYourCustomerServiceForBank.Server.Controllers;
 [Route("[controller]")]
 public class DocumentController(ILogger<DocumentController> logger) : ControllerBase
 {
-
+  private readonly ILogger<DocumentController> _logger = logger;
 }
