@@ -11,7 +11,7 @@ import {
   Stack,
   IconButton,
   InputAdornment,
-  Divider,
+  CircularProgress
 } from '@mui/material';
 import { Login, Visibility, VisibilityOff } from '@mui/icons-material'
 export const Route = createFileRoute('/login')({
@@ -40,14 +40,15 @@ function RouteComponent() {
     <Container maxWidth="sm">
       <Box
         className="flex flex-col justify-center min-h-screen"
+      // sx={{ backgroundColor: theme => theme.palette.background.paper }}
       >
         <Stack
-          spacing={2}
+          spacing={3}
           sx={{
             padding: 1,
             borderRadius: 1,
-            // borderColor: (theme) => theme.palette.background.paper,
             borderColor: (theme) => theme.palette.divider,
+            // borderColor: (theme) => theme.palette.divider,
             borderWidth: 1,
             backgroundColor:
               (theme) => theme.palette.background.paper,
@@ -63,12 +64,12 @@ function RouteComponent() {
           <Typography
             variant='h5'
             component="h5"
-            sx={{ borderColor: "divider", backgroundColor: "secondary.main", color: "secondary.contrastText", boxSizing: "border-box" }}
-            className='w-full max-w-160 p-2 rounded-xl text-center'
+            sx={{ borderColor: "divider", backgroundColor: "secondary.main", color: "secondary.contrastText" }}
+            className='w-full max-w-160 p-2 rounded-xl text-center font-black h-14'
             children={"Login"}
             gutterBottom
           />
-          <Divider />
+          {/* <Divider /> */}
 
           <form.Field name="email">
             {(field) => {
@@ -98,14 +99,17 @@ function RouteComponent() {
                   slotProps={{
                     input: {
                       endAdornment: (
-                        <InputAdornment position="end">
+                        <InputAdornment position="start">
                           <IconButton
-                            className="rounded-lg! transition-all"
+                            className="transition-all"
+                            edge="end"
+                            color='primary'
+                            sx={{ borderRadius: 1 }}
                             onClick={() => {
                               setPasswordVisible(passwordVisible === "password" ? "text" : "password");
-                            }}>
-                            {passwordVisible === "password" ? <Visibility /> : <VisibilityOff />}
-                          </IconButton>
+                            }}
+                            children={passwordVisible === "password" ? <Visibility /> : <VisibilityOff />}
+                          />
                         </InputAdornment >
                       )
                     }
@@ -118,13 +122,22 @@ function RouteComponent() {
               )
             }}
           </form.Field>
-          {/* <form.Subscribe>
-            {(fie)=>{}}
-          </form.Subscribe> */}
-          <Divider sx={{ width: 1 }} />
-          <Button variant="contained" type="submit" fullWidth startIcon={<Login />}>
-            Sign In
-          </Button>
+
+          <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
+            {([canSubmit, isSubmitting]) => (
+
+              <Button
+                variant="contained"
+                type="submit"
+                className='h-12'
+                fullWidth
+                startIcon={<Login />}
+                disabled={!canSubmit}
+              > {isSubmitting && <CircularProgress aria-label="Loading…" />}
+                Log In
+              </Button>
+            )}
+          </form.Subscribe>
         </Stack>
       </Box>
     </Container>);
