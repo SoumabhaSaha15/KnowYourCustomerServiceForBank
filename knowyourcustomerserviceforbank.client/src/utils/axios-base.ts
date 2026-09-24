@@ -1,4 +1,4 @@
-import Cookies from "js-cookie";
+// import Cookies from "js-cookie";
 import { type ZodType } from "zod";
 import axios, { type AxiosResponse } from "axios";
 
@@ -39,18 +39,18 @@ const customFormSerializer = (data: object): FormData => {
   return formData;
 };
 
-base.interceptors.request.use(
-  (config) => {
-    const unsafeMethods = ["POST", "PUT", "PATCH", "DELETE"];
-    if (unsafeMethods.includes(config.method?.toUpperCase() || "")) {
-      const csrfToken = Cookies.get("csrftoken"); // Read the cookie using js-cookie
-      if (csrfToken) config.headers["X-XSRF-TOKEN"] = csrfToken;
-      console.log("CSRF Token added to request headers:", csrfToken);
-    }
-    return config;
-  },
-  (error) => Promise.reject(error),
-);
+// base.interceptors.request.use(
+//   (config) => {
+//     const unsafeMethods = ["POST", "PUT", "PATCH", "DELETE"];
+//     if (unsafeMethods.includes(config.method?.toUpperCase() || "")) {
+//       const csrfToken = Cookies.get("csrftoken"); // Read the cookie using js-cookie
+//       if (csrfToken) config.headers["X-XSRF-TOKEN"] = csrfToken;
+//       console.log("CSRF Token added to request headers:", csrfToken);
+//     }
+//     return config;
+//   },
+//   (error) => Promise.reject(error),
+// );
 
 base.interceptors.request.use(
   (config) => {

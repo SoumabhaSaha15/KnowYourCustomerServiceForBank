@@ -7,12 +7,12 @@ const darkTheme = createTheme(
     typography: {
       fontFamily: '"IBM Plex Serif", serif',
     },
-    shape: { borderRadius: 16 },
+    shape: { borderRadius: 12 },
     components: {
       MuiButton: {
         styleOverrides: {
           root: {
-            borderRadius: 16, // Pill-shaped buttons
+            borderRadius: 12, // Pill-shaped buttons
             textTransform: 'none', // MD3 drops all-caps button text
           },
         },

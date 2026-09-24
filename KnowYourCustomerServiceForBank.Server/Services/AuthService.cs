@@ -13,8 +13,6 @@ namespace KnowYourCustomerServiceForBank.Server.Services;
 [ServiceLifetime(ServiceLifetime.Scoped)]
 public class AuthService(AppDbContext context, ILogger<AuthService> logger) : IAuthService
 {
-  // private readonly IRepository<User> _userRepo = userRepo;
-
   private readonly ILogger<AuthService> _logger = logger;
   private readonly AppDbContext _context = context;
 

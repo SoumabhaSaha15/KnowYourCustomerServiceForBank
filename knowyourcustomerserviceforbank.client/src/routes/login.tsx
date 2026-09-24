@@ -9,6 +9,9 @@ import {
   Button,
   Typography,
   Stack,
+  IconButton,
+  InputAdornment,
+  Divider,
 } from '@mui/material';
 import { Login, Visibility, VisibilityOff } from '@mui/icons-material'
 export const Route = createFileRoute('/login')({
@@ -26,9 +29,7 @@ function RouteComponent() {
     },
     onSubmit: async ({ value }) => {
       try {
-        base.get('/UserLogin').then((data: unknown) => console.log(data));
-        const response = await base.post('/UserLogin', value);
-        console.log(response.data, response.status);
+        base.post('/Auth', value).then(({ data }) => console.log(data));
       } catch (error) {
         console.error(error);
       }
@@ -40,15 +41,35 @@ function RouteComponent() {
       <Box
         className="flex flex-col justify-center min-h-screen"
       >
-        <Typography variant="h4" component="h1" gutterBottom>
-          Login
-        </Typography>
+        <Stack
+          spacing={2}
+          sx={{
+            padding: 1,
+            borderRadius: 1,
+            // borderColor: (theme) => theme.palette.background.paper,
+            borderColor: (theme) => theme.palette.divider,
+            borderWidth: 1,
+            backgroundColor:
+              (theme) => theme.palette.background.paper,
+          }}
+          component="form"
+          method="post"
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            form.handleSubmit();
+          }}
+        >
+          <Typography
+            variant='h5'
+            component="h5"
+            sx={{ borderColor: "divider", backgroundColor: "secondary.main", color: "secondary.contrastText", boxSizing: "border-box" }}
+            className='w-full max-w-160 p-2 rounded-xl text-center'
+            children={"Login"}
+            gutterBottom
+          />
+          <Divider />
 
-        <Stack spacing={2} component="form" method="post" onSubmit={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          form.handleSubmit();
-        }} >
           <form.Field name="email">
             {(field) => {
               return (
@@ -77,11 +98,15 @@ function RouteComponent() {
                   slotProps={{
                     input: {
                       endAdornment: (
-                        <Button sx={{ color: 'primary.main', ":hover": { backgroundColor: 'transparent' } }} disableRipple onClick={() => {
-                          setPasswordVisible(passwordVisible === "password" ? "text" : "password");
-                        }}>
-                          {passwordVisible === "password" ? <Visibility /> : <VisibilityOff />}
-                        </Button>
+                        <InputAdornment position="end">
+                          <IconButton
+                            className="rounded-lg! transition-all"
+                            onClick={() => {
+                              setPasswordVisible(passwordVisible === "password" ? "text" : "password");
+                            }}>
+                            {passwordVisible === "password" ? <Visibility /> : <VisibilityOff />}
+                          </IconButton>
+                        </InputAdornment >
                       )
                     }
                   }}
@@ -93,7 +118,10 @@ function RouteComponent() {
               )
             }}
           </form.Field>
-
+          {/* <form.Subscribe>
+            {(fie)=>{}}
+          </form.Subscribe> */}
+          <Divider sx={{ width: 1 }} />
           <Button variant="contained" type="submit" fullWidth startIcon={<Login />}>
             Sign In
           </Button>

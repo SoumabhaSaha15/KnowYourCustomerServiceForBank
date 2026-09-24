@@ -1,16 +1,15 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using KnowYourCustomerServiceForBank.Server.Services;
 using KnowYourCustomerServiceForBank.Server.ViewModels;
 namespace KnowYourCustomerServiceForBank.Server.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class UserAuthenticationController(ILogger<UserAuthenticationController> logger, IAuthService authService) : ControllerBase
+public class AuthController(ILogger<AuthController> logger, IAuthService authService) : ControllerBase
 {
-  private readonly ILogger<UserAuthenticationController> _logger = logger;
+  private readonly ILogger<AuthController> _logger = logger;
   private readonly IAuthService _authService = authService;
   [HttpPost]
   public async Task<IActionResult> Index([FromBody] UserLogin model)
@@ -24,7 +23,7 @@ public class UserAuthenticationController(ILogger<UserAuthenticationController> 
     else
     {
       ClaimsPrincipal principal = _authService.BuildPrincipal(user);
-      await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+      await HttpContext.SignInAsync(principal);
       return Ok(user);
     }
   }

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using KnowYourCustomerServiceForBank.Server.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using KnowYourCustomerServiceForBank.Server.Models;
+using KnowYourCustomerServiceForBank.Server.Config;
 using KnowYourCustomerServiceForBank.Server.Annotations;
 namespace KnowYourCustomerServiceForBank.Server
 {
@@ -13,29 +14,28 @@ namespace KnowYourCustomerServiceForBank.Server
     {
       var builder = WebApplication.CreateBuilder(args);
 
-      builder.Services.Scan(scan => scan
-          .FromAssemblies(typeof(Program).Assembly)
-          .AddClasses(classes => classes.WithAttribute<ServiceLifetimeAttribute>())
-              .AsImplementedInterfaces()
-              .WithLifetime(
-                (type) =>
-                  {
-                    return type.GetCustomAttribute<ServiceLifetimeAttribute>()?.Lifetime ?? ServiceLifetime.Scoped;
-                  }
-              )
-      );
+      builder.Services.Scan(
+        (scan) =>
+        {
+          scan
+            .FromAssemblies(typeof(Program).Assembly)
+            .AddClasses(classes => classes.WithAttribute<ServiceLifetimeAttribute>())
+            .AsImplementedInterfaces()
+            .WithLifetime(type => type.GetCustomAttribute<ServiceLifetimeAttribute>()?.Lifetime ?? ServiceLifetime.Scoped);
+        }
+      );  // Adding scrutor reflection
 
-      builder.Services.AddDbContext<AppDbContext>(options =>
-          options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
-      );
-      builder.Services.AddDistributedSqlServerCache(options =>
-      {
-        options.ConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-        options.SchemaName = "dbo";
-        options.TableName = "SessionCache";
-      });
+      builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-      // 2. Register Session State Services
+      builder.Services.AddDistributedSqlServerCache(
+        (options) =>
+        {
+          options.ConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+          options.SchemaName = "dbo";
+          options.TableName = "SessionCache";
+        }
+      );  // Database session cache
+
       builder.Services.AddSession(
         (options) =>
         {
@@ -44,22 +44,20 @@ namespace KnowYourCustomerServiceForBank.Server
           options.Cookie.IsEssential = true; // Ensures cookie functions regardless of user consent
           options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Forces HTTPS delivery channels
         }
-      );
-
+      );  // 2. Register Session State Services
 
       builder.Services
-      .AddControllers()
-      .AddJsonOptions(
-        (options) => options.JsonSerializerOptions.Converters.Add(
-          new System.Text.Json.Serialization.JsonStringEnumConverter()
-        )
-      );
+        .AddControllers()
+        .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter()));
 
-      // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-      builder.Services.AddOpenApi();
+      builder.Services.AddOpenApi();  // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+
+      builder.Services.AddSingleton<ITicketStore, DistributedCacheTicketStore>(); // Storing session in DB cache.
+
       builder.Services
         .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-        .AddCookie(options =>
+        .AddCookie(
+          (options) =>
           {
             options.Events.OnRedirectToLogin = (context) =>
               {
@@ -77,6 +75,11 @@ namespace KnowYourCustomerServiceForBank.Server
             options.SlidingExpiration = true;
           }
         );
+
+      builder.Services
+        .AddOptions<CookieAuthenticationOptions>(CookieAuthenticationDefaults.AuthenticationScheme)
+        .Configure<ITicketStore>((options, store) => options.SessionStore = store);
+
       builder.Services
         .AddAuthorizationBuilder()
         .AddPolicy(
