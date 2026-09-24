@@ -6,17 +6,16 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using KnowYourCustomerServiceForBank.Server.Models;
 using KnowYourCustomerServiceForBank.Server.ViewModels;
 using KnowYourCustomerServiceForBank.Server.Annotations;
-// using KnowYourCustomerServiceForBank.Server.Repositories;
 
 namespace KnowYourCustomerServiceForBank.Server.Services;
 
 
 [ServiceLifetime(ServiceLifetime.Scoped)]
-public class LoginService(AppDbContext context, ILogger<LoginService> logger) : ILoginService
+public class AuthService(AppDbContext context, ILogger<AuthService> logger) : IAuthService
 {
   // private readonly IRepository<User> _userRepo = userRepo;
 
-  private readonly ILogger<LoginService> _logger = logger;
+  private readonly ILogger<AuthService> _logger = logger;
   private readonly AppDbContext _context = context;
 
   private static readonly PasswordHasher<User> _hasher = new();

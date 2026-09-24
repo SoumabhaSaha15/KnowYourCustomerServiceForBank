@@ -4,7 +4,7 @@ using KnowYourCustomerServiceForBank.Server.ViewModels;
 
 namespace KnowYourCustomerServiceForBank.Server.Services;
 
-public interface ILoginService
+public interface IAuthService
 {
   public Task<User?> FetchUser(UserLogin model);
   public ClaimsPrincipal BuildPrincipal(User model);

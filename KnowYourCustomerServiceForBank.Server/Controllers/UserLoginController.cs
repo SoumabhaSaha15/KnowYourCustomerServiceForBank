@@ -2,26 +2,20 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-// using KnowYourCustomerServiceForBank.Server.Filters;
 using KnowYourCustomerServiceForBank.Server.Services;
 using KnowYourCustomerServiceForBank.Server.ViewModels;
 namespace KnowYourCustomerServiceForBank.Server.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class UserLoginController(ILogger<UserLoginController> logger, ILoginService loginService) : ControllerBase
+public class UserAuthenticationController(ILogger<UserAuthenticationController> logger, IAuthService authService) : ControllerBase
 {
-  private readonly ILogger<UserLoginController> _logger = logger;
-  private readonly ILoginService _loginService = loginService;
-  [HttpGet]
-  public IActionResult InitializeCookie()
-  {
-    return Ok(new { message = "CSRF initialized." });
-  }
+  private readonly ILogger<UserAuthenticationController> _logger = logger;
+  private readonly IAuthService _authService = authService;
   [HttpPost]
   public async Task<IActionResult> Index([FromBody] UserLogin model)
   {
-    var user = await _loginService.FetchUser(model);
+    var user = await _authService.FetchUser(model);
     if (user == null)
     {
       _logger.LogError("Authentication failed.");
@@ -29,7 +23,7 @@ public class UserLoginController(ILogger<UserLoginController> logger, ILoginServ
     }
     else
     {
-      ClaimsPrincipal principal = _loginService.BuildPrincipal(user);
+      ClaimsPrincipal principal = _authService.BuildPrincipal(user);
       await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
       return Ok(user);
     }

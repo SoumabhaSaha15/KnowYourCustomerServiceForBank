@@ -12,8 +12,6 @@ namespace KnowYourCustomerServiceForBank.Server
     public static void Main(string[] args)
     {
       var builder = WebApplication.CreateBuilder(args);
-      // Add services to the container.
-      // using KnowYourCustomerServiceForBank.Server.Annotations;
 
       builder.Services.Scan(scan => scan
           .FromAssemblies(typeof(Program).Assembly)
@@ -60,24 +58,25 @@ namespace KnowYourCustomerServiceForBank.Server
       // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
       builder.Services.AddOpenApi();
       builder.Services
-          .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-          .AddCookie(options =>
+        .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+        .AddCookie(options =>
           {
             options.Events.OnRedirectToLogin = (context) =>
-                  {
-                    context.Response.StatusCode = 401; // Unauthorized
-                    return Task.CompletedTask;
-                  };
+              {
+                context.Response.StatusCode = StatusCodes.Status401Unauthorized; // Unauthorized
+                return Task.CompletedTask;
+              };
             options.Events.OnRedirectToAccessDenied = (context) =>
-                  {
-                    context.Response.StatusCode = StatusCodes.Status403Forbidden;
-                    return Task.CompletedTask;
-                  };
+              {
+                context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                return Task.CompletedTask;
+              };
             options.Cookie.HttpOnly = true; // Protect against XSS
             options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // HTTPS only
             options.ExpireTimeSpan = TimeSpan.FromHours(8); // Set reasonable expiration
             options.SlidingExpiration = true;
-          });
+          }
+        );
       builder.Services
         .AddAuthorizationBuilder()
         .AddPolicy(
