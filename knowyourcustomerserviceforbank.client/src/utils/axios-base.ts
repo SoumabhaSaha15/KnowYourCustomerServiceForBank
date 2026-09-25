@@ -11,7 +11,6 @@ declare module "axios" {
 const base = axios.create({
   baseURL: "/api",
   withCredentials: true,
-  // validateStatus: (_) => true,
 });
 
 const customFormSerializer = (data: object): FormData => {

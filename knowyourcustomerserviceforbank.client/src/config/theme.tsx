@@ -1,53 +1,56 @@
 import { createTheme } from '@mui/material/styles';
 
-const brandPrimary = '#6591FE';
-const brandDark = '#23272B';
+// const brandPrimary = '#6591FE';
+// const brandDark = '#23272B';
 
-const darkTheme = createTheme(
+const theme = createTheme(
   {
     colorSchemes: {
       light: {
         palette: {
           primary: {
-            main: brandPrimary,
-            light: '#8EAEFF',
-            dark: '#3F6FD6',
+            main: '#427BFF',
+            light: '#6C90FE',
+            dark: '#2F5FD1',
             contrastText: '#FFFFFF',
           },
           secondary: {
-            main: brandDark,
+            main: '#1F1F1F',
             contrastText: '#FFFFFF',
           },
           background: {
-            default: '#F5F7FB', // Soft tinted background
-            paper: '#FFFFFF',   // Crisp white for cards/surfaces
+            default: '#F7F9FC',
+            paper: '#FFFFFF',
           },
           text: {
-            primary: brandDark,
-            secondary: '#606770',
+            primary: '#1F1F1F',
+            secondary: '#5F6673',
           },
+          divider: '#E5E9F0',
         },
       },
+
       dark: {
         palette: {
           primary: {
-            main: brandPrimary,
-            light: '#A0BCFF',
-            dark: '#3F6FD6',
-            contrastText: brandDark,
+            main: '#6C90FE',
+            light: '#9DB7FF',
+            dark: '#427BFF',
+            contrastText: '#FFFFFF',
           },
           secondary: {
-            main: '#D5DFEB',
-            contrastText: brandDark,
+            main: '#D9E0EA',
+            contrastText: '#1F1F1F',
           },
           background: {
-            default: '#121417', // Deep charcoal base
-            paper: brandDark,   // #23272B (Elevated surfaces match your brand outline)
+            default: '#101216',
+            paper: '#1F1F1F',
           },
           text: {
-            primary: '#F0F3F8',
-            secondary: '#A0A7B4',
+            primary: '#F3F5F8',
+            secondary: '#A8AFBC',
           },
+          divider: '#2C313A',
         },
       },
     },
@@ -118,4 +121,4 @@ const darkTheme = createTheme(
     }
   }
 );
-export default darkTheme;
+export default theme;

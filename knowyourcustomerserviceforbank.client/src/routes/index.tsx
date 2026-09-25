@@ -42,9 +42,7 @@ function LandingPage() {
       sx={{
         bgcolor: "background.default",
         color: "text.primary",
-        background: (theme) => theme.palette.mode === "dark"
-          ? `radial-gradient(circle at top left, color-mix(in srgb, ${theme.palette.primary.main} 20%, transparent), transparent 35%),linear-gradient(135deg, ${theme.palette.background.default} 0%, ${theme.palette.background.paper} 45%, ${theme.palette.background.default} 100%)`
-          : `radial-gradient(circle at top left, color-mix(in srgb, ${theme.palette.primary.main} 10%, transparent), transparent 35%),linear-gradient(135deg, ${theme.palette.background.default} 0%, ${theme.palette.background.paper} 45%, ${theme.palette.background.default} 100%)`,
+        background: (theme) => `radial-gradient(circle at top left, color-mix(in srgb, ${theme.palette.primary.main} 20%, transparent), transparent 35%),linear-gradient(135deg, ${theme.palette.background.default} 0%, ${theme.palette.background.paper} 45%, ${theme.palette.background.default} 100%)`
       }}
     >
       {/* ── Navbar ── */}
@@ -60,7 +58,9 @@ function LandingPage() {
               className="flex h-10 w-10 items-center justify-center rounded-full"
               sx={{
                 bgcolor: "primary.main",
-                border: "1px solid",
+                borderStyle: "solid",
+                borderWidth: 1,
+
                 borderColor: "primary.light",
               }}
             >
@@ -101,7 +101,6 @@ function LandingPage() {
                 className="capitalize transition-colors"
                 sx={{
                   color: "text.secondary",
-                  // bgcolor: "primary.contrastText",
                   "&:hover": { color: "text.primary" },
                 }}
               >
@@ -116,10 +115,12 @@ function LandingPage() {
       <Container maxWidth="xl" className="pb-20">
         <Paper
           elevation={4}
-          className="grid items-center gap-10 rounded-lg p-8 backdrop-blur-sm xl:grid-cols-[1.1fr_0.9fr] xl:p-12"
+          className="grid items-center gap-10 p-8 backdrop-blur-sm xl:grid-cols-[1.1fr_0.9fr] xl:p-12"
           sx={{
             bgcolor: "background.paper",
-            border: "1px solid",
+            borderWidth: 1,
+            borderRadius: 2,
+            borderStyle: "solid",
             borderColor: "divider",
           }}
         >
@@ -159,7 +160,8 @@ function LandingPage() {
                 href="#contact"
                 variant="contained"
                 color="primary"
-                className="rounded-lg px-5 py-3 text-sm font-semibold normal-case"
+                className="px-5 py-3 text-sm font-semibold normal-case"
+                sx={{ borderRadius: 1.25 }}
               >
                 Start onboarding
               </Button>
@@ -168,7 +170,8 @@ function LandingPage() {
                 href="#features"
                 variant="outlined"
                 color="inherit"
-                className="rounded-lg px-5 py-3 text-sm font-semibold normal-case"
+                sx={{ borderRadius: 1.25 }}
+                className="px-5 py-3 text-sm font-semibold normal-case"
               >
                 Explore features
               </Button>
@@ -178,10 +181,12 @@ function LandingPage() {
           {/* Progress card */}
           <Paper
             elevation={8}
-            className="rounded-lg p-6"
+            className="p-6 hover:scale-105"
             sx={{
               bgcolor: "background.default",
-              border: "1px solid",
+              borderWidth: 1,
+              borderStyle: " solid",
+              borderRadius: 2,
               borderColor: "divider",
             }}
           >
@@ -210,11 +215,12 @@ function LandingPage() {
               {progressItems.map((item) => (
                 <Box
                   key={item.label}
-                  className="rounded-lg p-4"
+                  className="p-4"
                   sx={{
-                    bgcolor: "action.hover",
-                    border: "1px solid",
+                    backgroundColor: "action.hover",
+                    borderWidth: 1,
                     borderColor: "divider",
+                    borderRadius: 1.5
                   }}
                 >
                   <Stack direction="row" className="items-center justify-between">
@@ -241,10 +247,11 @@ function LandingPage() {
             <Paper
               key={item.title}
               elevation={2}
-              className="rounded-lg p-6"
+              className="p-6 hover:scale-105"
               sx={{
                 bgcolor: "background.paper",
-                border: "1px solid",
+                borderWidth: 1,
+                borderRadius: 2,
                 borderColor: "divider",
               }}
             >
@@ -266,11 +273,13 @@ function LandingPage() {
         <Paper
           id="workflow"
           elevation={2}
-          className="mt-16 rounded-lg p-8 lg:p-10"
+          className="mt-16 p-8 lg:p-10"
           sx={{
             bgcolor: "background.paper",
-            border: "1px solid",
+            // border: "1px solid",
+            borderWidth: 1,
             borderColor: "divider",
+            borderRadius: 2
           }}
         >
           <Stack
@@ -315,10 +324,11 @@ function LandingPage() {
             ].map((step) => (
               <Box
                 key={step}
-                className="rounded-lg p-4 text-sm"
+                className="p-4 text-sm hover:scale-105"
                 sx={{
-                  bgcolor: "action.hover",
-                  border: "1px solid",
+                  backgroundColor: "action.hover",
+                  borderWidth: 1,
+                  borderRadius: 1.5,
                   borderColor: "divider",
                   color: "text.secondary",
                 }}

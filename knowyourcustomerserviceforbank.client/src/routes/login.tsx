@@ -1,4 +1,4 @@
-import React from 'react';
+// import React from 'react';
 import base from "@/utils/axios-base";
 import { useForm } from '@tanstack/react-form';
 import { createFileRoute } from '@tanstack/react-router';
@@ -9,27 +9,22 @@ import {
   Button,
   Typography,
   Stack,
-  IconButton,
-  InputAdornment,
   CircularProgress
 } from '@mui/material';
-import { Login, Visibility, VisibilityOff } from '@mui/icons-material'
+import { Login } from '@mui/icons-material'
+import { userLogin } from "@/validators/user";
+import PasswordInputField from '@/shared/PasswordInputField';
 export const Route = createFileRoute('/login')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
 
-  const [passwordVisible, setPasswordVisible] = React.useState<"text" | "password">("password");
-
   const form = useForm({
-    defaultValues: {
-      email: 'admin@kycflow.com',
-      password: 'admin123',
-    },
+    validators: { onChange: userLogin },
     onSubmit: async ({ value }) => {
       try {
-        base.post('/Auth', value).then(({ data }) => console.log(data));
+        base.post('/Auth', value).then(console.dir);
       } catch (error) {
         console.error(error);
       }
@@ -38,18 +33,15 @@ function RouteComponent() {
 
   return (
     <Container maxWidth="sm">
-      <Box
-        className="flex flex-col justify-center min-h-screen"
-      // sx={{ backgroundColor: theme => theme.palette.background.paper }}
-      >
+      <Box className="flex flex-col justify-center min-h-screen">
         <Stack
+          className='hover:scale-105'
           spacing={3}
           sx={{
             padding: 1,
             borderRadius: 1,
             borderColor: (theme) => theme.palette.divider,
-            // borderColor: (theme) => theme.palette.divider,
-            borderWidth: 1,
+            borderWidth: 2,
             backgroundColor:
               (theme) => theme.palette.background.paper,
           }}
@@ -69,7 +61,6 @@ function RouteComponent() {
             children={"Login"}
             gutterBottom
           />
-          {/* <Divider /> */}
 
           <form.Field name="email">
             {(field) => {
@@ -82,7 +73,7 @@ function RouteComponent() {
                   onChange={(e) => field.setValue(e.target.value)}
                   fullWidth
                   variant="outlined"
-                  helperText={field.state.meta.errors.shift()}
+                  helperText={field.state.meta.errors.shift()?.message}
                 />
               )
             }}
@@ -91,33 +82,14 @@ function RouteComponent() {
           <form.Field name="password">
             {(field) => {
               return (
-                <TextField
+                <PasswordInputField
                   label={field.name}
                   name={field.name}
                   value={field.state.value}
-                  type={passwordVisible}
-                  slotProps={{
-                    input: {
-                      endAdornment: (
-                        <InputAdornment position="start">
-                          <IconButton
-                            className="transition-all"
-                            edge="end"
-                            color='primary'
-                            sx={{ borderRadius: 1 }}
-                            onClick={() => {
-                              setPasswordVisible(passwordVisible === "password" ? "text" : "password");
-                            }}
-                            children={passwordVisible === "password" ? <Visibility /> : <VisibilityOff />}
-                          />
-                        </InputAdornment >
-                      )
-                    }
-                  }}
                   onChange={(e) => field.setValue(e.target.value)}
                   fullWidth
                   variant="outlined"
-                  helperText={field.state.meta.errors.shift()}
+                  helperText={field.state.meta.errors.shift()?.message}
                 />
               )
             }}
@@ -125,7 +97,6 @@ function RouteComponent() {
 
           <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
             {([canSubmit, isSubmitting]) => (
-
               <Button
                 variant="contained"
                 type="submit"
@@ -142,3 +113,6 @@ function RouteComponent() {
       </Box>
     </Container>);
 }
+
+
+

@@ -23,6 +23,8 @@ public class AuthController(ILogger<AuthController> logger, IAuthService authSer
     else
     {
       ClaimsPrincipal principal = _authService.BuildPrincipal(user);
+      string token = _authService.GenerateAccessToken(user);
+      HttpContext.Response.Headers["x-access-token"] = token;
       await HttpContext.SignInAsync(principal);
       return Ok(user);
     }

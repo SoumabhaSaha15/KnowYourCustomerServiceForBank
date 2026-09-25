@@ -1,10 +1,12 @@
+using System.Text;
 using System.Reflection; // REQUIRED for GetCustomAttribute
-using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using KnowYourCustomerServiceForBank.Server.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using KnowYourCustomerServiceForBank.Server.Models;
 using KnowYourCustomerServiceForBank.Server.Config;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using KnowYourCustomerServiceForBank.Server.Annotations;
 namespace KnowYourCustomerServiceForBank.Server
 {
@@ -12,7 +14,14 @@ namespace KnowYourCustomerServiceForBank.Server
   {
     public static void Main(string[] args)
     {
+      var cookieOption = CookieAuthenticationDefaults.AuthenticationScheme;
+
       var builder = WebApplication.CreateBuilder(args);
+
+      var tokenConfig = builder.Configuration.GetSection("Jwt");
+
+
+      var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenConfig["Key"]!));
 
       builder.Services.Scan(
         (scan) =>
@@ -34,15 +43,16 @@ namespace KnowYourCustomerServiceForBank.Server
           options.SchemaName = "dbo";
           options.TableName = "SessionCache";
         }
-      );  // Database session cache
+      );  // Database for session cache initialization not configured yet
 
       builder.Services.AddSession(
         (options) =>
         {
-          options.IdleTimeout = TimeSpan.FromDays(1); // Session expiration length
+          options.IdleTimeout = TimeSpan.FromDays(7); // Session expiration length
           options.Cookie.HttpOnly = true; // Mitigates XSS security vulnerabilities
           options.Cookie.IsEssential = true; // Ensures cookie functions regardless of user consent
           options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Forces HTTPS delivery channels
+          options.Cookie.SameSite = SameSiteMode.Strict;
         }
       );  // 2. Register Session State Services
 
@@ -52,16 +62,24 @@ namespace KnowYourCustomerServiceForBank.Server
 
       builder.Services.AddOpenApi();  // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 
-      builder.Services.AddSingleton<ITicketStore, DistributedCacheTicketStore>(); // Storing session in DB cache.
+      builder.Services.AddSingleton<ITicketStore, DistributedCacheTicketStore>(); // Injecting DCTS as DI to config the DB driven session.
 
       builder.Services
-        .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+        .AddAuthentication(
+          (options) =>
+          {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultSignInScheme = cookieOption;
+            options.DefaultSignOutScheme = cookieOption;
+          }
+        )
         .AddCookie(
           (options) =>
           {
             options.Events.OnRedirectToLogin = (context) =>
               {
-                context.Response.StatusCode = StatusCodes.Status401Unauthorized; // Unauthorized
+                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                 return Task.CompletedTask;
               };
             options.Events.OnRedirectToAccessDenied = (context) =>
@@ -74,11 +92,46 @@ namespace KnowYourCustomerServiceForBank.Server
             options.ExpireTimeSpan = TimeSpan.FromHours(8); // Set reasonable expiration
             options.SlidingExpiration = true;
           }
+        ).AddJwtBearer(
+          (options) =>
+          {
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+              ValidateIssuer = true,
+              ValidIssuer = tokenConfig["Issuer"],
+              ValidateAudience = true,
+              ValidAudience = tokenConfig["Audience"],
+              ValidateIssuerSigningKey = true,
+              IssuerSigningKey = signingKey,
+              ValidateLifetime = true,
+              ClockSkew = TimeSpan.FromSeconds(30)
+            };
+          }
         );
 
       builder.Services
-        .AddOptions<CookieAuthenticationOptions>(CookieAuthenticationDefaults.AuthenticationScheme)
-        .Configure<ITicketStore>((options, store) => options.SessionStore = store);
+        .AddOptions<CookieAuthenticationOptions>(cookieOption)
+        .Configure<ITicketStore>((options, store) => options.SessionStore = store); // Configures DB driven session. 
+
+      #region optional cors
+      /*
+      builder.Services.AddCors(
+        options =>
+        {
+          options.AddDefaultPolicy(
+            policy =>
+            {
+              policy.WithOrigins("http://localhost:5173") // Your frontend URL
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials() // Required because withCredentials = true
+                .WithExposedHeaders("Authorization", "x-access-token"); // Must expose explicitly
+            }
+          );
+        }
+      );
+      */
+      #endregion
 
       builder.Services
         .AddAuthorizationBuilder()
@@ -86,8 +139,7 @@ namespace KnowYourCustomerServiceForBank.Server
           "StaffOnly",
           (policy) =>
           {
-            policy.RequireClaim(
-              ClaimTypes.Role,
+            policy.RequireRole(
               UserRoleOptions.ADMIN.ToString(),
               UserRoleOptions.KYC_OFFICER.ToString(),
               UserRoleOptions.COMPLIANCE_OFFICER.ToString()

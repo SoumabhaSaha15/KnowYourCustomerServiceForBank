@@ -33,7 +33,7 @@ public class User : ITrackable
   public required string FullName { get; set; }
 
   [Required]
-  [StringLength(254)]
+  [StringLength(254)] //  Angle braces <> is there in SMTP so -2 from 256
   [EmailAddress]
   public required string Email { get; set; }
 
@@ -41,7 +41,7 @@ public class User : ITrackable
   [RegularExpression(@"^\+?[1-9]\d{1,14}$", ErrorMessage = "Phone number must be valid.")]
   public string? PhoneNumber { get; set; }
 
-  [StringLength(255)]
+  [StringLength(256)]
   [RegularExpression(@"^[a-zA-Z\s'.\-]+$", ErrorMessage = "Address contains invalid characters.")]
   public string? Address { get; set; }
 
@@ -51,12 +51,10 @@ public class User : ITrackable
   public string Password { get; set; } = null!;
 
   [Required]
-  // [JsonConverter(typeof(JsonStringEnumConverter))]
   public required OnboardingStatusOptions OnboardingStatus { get; set; }
 
   public DateOnly? DateOfBirth { get; set; }
 
-  // [JsonConverter(typeof(JsonStringEnumConverter))]
   public UserRoleOptions UserRole { get; set; } = UserRoleOptions.CUSTOMER;
 
   public bool IsActive { get; set; } = false; // Default to false so seeded officers cannot log in until activated
