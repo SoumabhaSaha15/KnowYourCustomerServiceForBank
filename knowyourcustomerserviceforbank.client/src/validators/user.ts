@@ -10,21 +10,49 @@ export const userResponse = z.strictObject({
   dateOfBirth: z.iso.date().nullable(),
   userRole: z.enum(["CUSTOMER", "ADMIN", "KYC_OFFICER", "COMPLIANCE_OFFICER"]),
   isActive: z.boolean(),
-  createdAt: z.iso.datetime(),
-  updatedAt: z.iso.datetime()
-})
-  .refine(
-    (value) => (value.userRole === "CUSTOMER") ? value.phoneNumber !== null : true,
-    { error: "Phone number can't be null for customer.", path: ["phoneNumber"] }
-  )
-  .refine(
-    (value) => (value.userRole === "CUSTOMER") ? value.dateOfBirth !== null : true,
-    { error: "DOB can't be null for customer.", path: ["dateOfBirth"] }
-  )
-  .refine(
-    (value) => (value.userRole === "CUSTOMER") ? value.address !== null : true,
-    { error: "Address can't be null for customer.", path: ["address"] }
-  );
+  createdAt: z.iso.datetime({ local: true, precision: 7 }),
+  updatedAt: z.iso.datetime({ local: true, precision: 7 })
+}).superRefine((data, ctx) => {
+  if (data.userRole === "CUSTOMER") {
+    if (!data.phoneNumber) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Phone number is required for customers.",
+        path: ["phoneNumber"],
+      });
+    }
+
+    if (!data.address) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Address is required for customers.",
+        path: ["address"],
+      });
+    }
+
+    if (data.onboardingStatus === "NOT_APPLICABLE") {
+      ctx.addIssue({
+        code: "custom",
+        message: "Onboarding status can't be 'NOT_APPLICABLE'.",
+        path: ["onboardingStatus"],
+      });
+    }
+
+    if (!data.dateOfBirth) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Date of birth is required.",
+        path: ["dateOfBirth"],
+      });
+    } else if (new Date(data.dateOfBirth) >= new Date()) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Date of birth must be in the past.",
+        path: ["dateOfBirth"],
+      });
+    }
+  }
+});
 
 export const createUser = userResponse.omit({ userId: true });
 
