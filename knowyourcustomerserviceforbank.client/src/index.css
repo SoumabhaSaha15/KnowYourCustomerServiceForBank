@@ -1,5 +1,14 @@
 @import "tailwindcss";
 
+@theme {
+  --radius-xs: var(--mui-shape-borderRadius-xs, 4px);
+  --radius-sm: var(--mui-shape-borderRadius-sm, 8px);
+  --radius-md: var(--mui-shape-borderRadius-md, 12px);
+  --radius-lg: var(--mui-shape-borderRadius-lg, 16px);
+  --radius-xl: var(--mui-shape-borderRadius-xl, 28px);
+  --radius-full: 9999px;
+}
+
 * {
   font-family: "IBM Plex Serif", serif;
   font-style: normal;

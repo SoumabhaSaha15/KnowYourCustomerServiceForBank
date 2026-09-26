@@ -40,9 +40,9 @@ function LandingPage() {
     <Box
       className="min-h-screen"
       sx={{
-        bgcolor: "background.default",
+        backgroundColor: "background.default",
         color: "text.primary",
-        background: (theme) => `radial-gradient(circle at top left, color-mix(in srgb, ${theme.palette.primary.main} 20%, transparent), transparent 35%),linear-gradient(135deg, ${theme.palette.background.default} 0%, ${theme.palette.background.paper} 45%, ${theme.palette.background.default} 100%)`
+        backgroundImage: (theme) => `radial-gradient(circle at top left, color-mix(in srgb, ${theme.palette.primary.main} 20%, transparent), transparent 35%),linear-gradient(135deg, ${theme.palette.background.default} 0%, ${theme.palette.background.paper} 45%, ${theme.palette.background.default} 100%)`
       }}
     >
       {/* ── Navbar ── */}
@@ -55,12 +55,10 @@ function LandingPage() {
           {/* Logo */}
           <Stack direction="row" spacing={2} className="items-center">
             <Box
-              className="flex h-10 w-10 items-center justify-center rounded-full"
+              className="flex h-10 w-10 items-center justify-center rounded-full border-solid"
               sx={{
-                bgcolor: "primary.main",
-                borderStyle: "solid",
                 borderWidth: 1,
-
+                bgcolor: "primary.main",
                 borderColor: "primary.light",
               }}
             >
@@ -69,7 +67,6 @@ function LandingPage() {
                 src="/favicon.svg"
                 alt="KYC-Flow logo"
                 className="h-9 w-9 object-contain"
-                sx={{ opacity: 5 }}
               />
             </Box>
             <Box>
@@ -115,12 +112,11 @@ function LandingPage() {
       <Container maxWidth="xl" className="pb-20">
         <Paper
           elevation={4}
-          className="grid items-center gap-10 p-8 backdrop-blur-sm xl:grid-cols-[1.1fr_0.9fr] xl:p-12"
+          className="grid items-center gap-10 p-8 backdrop-blur-sm xl:grid-cols-[1.1fr_0.9fr] xl:p-12 border rounded-xl border-solid"
           sx={{
             bgcolor: "background.paper",
-            borderWidth: 1,
-            borderRadius: 2,
-            borderStyle: "solid",
+            // borderWidth: 1,
+            // borderRadius: 2,
             borderColor: "divider",
           }}
         >
@@ -161,7 +157,6 @@ function LandingPage() {
                 variant="contained"
                 color="primary"
                 className="px-5 py-3 text-sm font-semibold normal-case"
-                sx={{ borderRadius: 1.25 }}
               >
                 Start onboarding
               </Button>
@@ -170,7 +165,7 @@ function LandingPage() {
                 href="#features"
                 variant="outlined"
                 color="inherit"
-                sx={{ borderRadius: 1.25 }}
+                sx={{ backgroundColor: "secondary.main", color: "secondary.contrastText" }}
                 className="px-5 py-3 text-sm font-semibold normal-case"
               >
                 Explore features
@@ -181,12 +176,9 @@ function LandingPage() {
           {/* Progress card */}
           <Paper
             elevation={8}
-            className="p-6 hover:scale-105"
+            className="p-6 hover:scale-95 rounded-xl border border-solid"
             sx={{
               bgcolor: "background.default",
-              borderWidth: 1,
-              borderStyle: " solid",
-              borderRadius: 2,
               borderColor: "divider",
             }}
           >
@@ -215,12 +207,10 @@ function LandingPage() {
               {progressItems.map((item) => (
                 <Box
                   key={item.label}
-                  className="p-4"
+                  className="p-4 border rounded-lg"
                   sx={{
                     backgroundColor: "action.hover",
-                    borderWidth: 1,
                     borderColor: "divider",
-                    borderRadius: 1.5
                   }}
                 >
                   <Stack direction="row" className="items-center justify-between">
@@ -247,11 +237,11 @@ function LandingPage() {
             <Paper
               key={item.title}
               elevation={2}
-              className="p-6 hover:scale-105"
+              className="p-6 hover:scale-105 border rounded-xl"
               sx={{
                 bgcolor: "background.paper",
-                borderWidth: 1,
-                borderRadius: 2,
+                // borderWidth: 1,
+                // borderRadius: 2,
                 borderColor: "divider",
               }}
             >
@@ -273,13 +263,11 @@ function LandingPage() {
         <Paper
           id="workflow"
           elevation={2}
-          className="mt-16 p-8 lg:p-10"
+          className="mt-16 p-8 lg:p-10 border rounded-xl"
           sx={{
             bgcolor: "background.paper",
-            // border: "1px solid",
             borderWidth: 1,
             borderColor: "divider",
-            borderRadius: 2
           }}
         >
           <Stack
@@ -368,7 +356,7 @@ function LandingPage() {
               className="font-medium no-underline transition-colors"
               sx={{
                 color: "primary.main",
-                "&:hover": { color: "primary.light" },
+                "&:hover": { color: "primary.contrastText" },
               }}
             >
               hello@kycflow.example

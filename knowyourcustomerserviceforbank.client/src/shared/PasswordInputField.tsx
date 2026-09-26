@@ -14,11 +14,12 @@ export default function PasswordInputField(props: React.ComponentProps<typeof Te
       slotProps={{
         input: {
           endAdornment: (
-            <InputAdornment position="end">
+            <InputAdornment position="start">
               <IconButton
                 aria-label="toggle password visibility"
                 onClick={() => setShowPassword((prev) => !prev)}
-                edge="start"
+                edge="end"
+                className="rounded-md"
                 color='primary'
               >
                 {showPassword ? <VisibilityOff /> : <Visibility />}

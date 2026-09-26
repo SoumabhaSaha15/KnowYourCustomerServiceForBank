@@ -35,13 +35,10 @@ function RouteComponent() {
     <Container maxWidth="sm">
       <Box className="flex flex-col justify-center min-h-screen">
         <Stack
-          className='hover:scale-105'
-          spacing={3}
+          className='hover:scale-105 p-2 rounded-lg border-2'
+          spacing={4}
           sx={{
-            padding: 1,
-            borderRadius: 1,
             borderColor: (theme) => theme.palette.divider,
-            borderWidth: 2,
             backgroundColor:
               (theme) => theme.palette.background.paper,
           }}
@@ -57,7 +54,7 @@ function RouteComponent() {
             variant='h5'
             component="h5"
             sx={{ borderColor: "divider", backgroundColor: "secondary.main", color: "secondary.contrastText" }}
-            className='w-full max-w-160 p-2 rounded-xl text-center font-black h-14'
+            className='w-full max-w-160 p-2 rounded-md text-center font-black h-14'
             children={"Login"}
             gutterBottom
           />
@@ -73,6 +70,7 @@ function RouteComponent() {
                   onChange={(e) => field.setValue(e.target.value)}
                   fullWidth
                   variant="outlined"
+                  error={!!field.state.meta.errors.length}
                   helperText={field.state.meta.errors.shift()?.message}
                 />
               )
@@ -89,6 +87,7 @@ function RouteComponent() {
                   onChange={(e) => field.setValue(e.target.value)}
                   fullWidth
                   variant="outlined"
+                  error={!!field.state.meta.errors.length}
                   helperText={field.state.meta.errors.shift()?.message}
                 />
               )
@@ -100,7 +99,7 @@ function RouteComponent() {
               <Button
                 variant="contained"
                 type="submit"
-                className='h-12'
+                className='h-12 rounded-md'
                 fullWidth
                 startIcon={<Login />}
                 disabled={!canSubmit}

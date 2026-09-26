@@ -1,10 +1,8 @@
 import { createTheme } from '@mui/material/styles';
 
-// const brandPrimary = '#6591FE';
-// const brandDark = '#23272B';
-
 const theme = createTheme(
   {
+    spacing: 4,
     colorSchemes: {
       light: {
         palette: {
@@ -29,7 +27,6 @@ const theme = createTheme(
           divider: '#E5E9F0',
         },
       },
-
       dark: {
         palette: {
           primary: {
