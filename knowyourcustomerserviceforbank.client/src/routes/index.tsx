@@ -15,6 +15,9 @@ export const Route = createFileRoute("/")({
 });
 
 function LandingPage() {
+
+  const navigate = Route.useNavigate();
+
   const highlights = [
     {
       title: "Fast onboarding",
@@ -66,7 +69,7 @@ function LandingPage() {
                 component="img"
                 src="/favicon.svg"
                 alt="KYC-Flow logo"
-                className="h-9 w-9 object-contain"
+                className="h-10 w-10 object-contain"
               />
             </Box>
             <Box>
@@ -115,8 +118,6 @@ function LandingPage() {
           className="grid items-center gap-10 p-8 backdrop-blur-sm xl:grid-cols-[1.1fr_0.9fr] xl:p-12 border rounded-xl border-solid"
           sx={{
             bgcolor: "background.paper",
-            // borderWidth: 1,
-            // borderRadius: 2,
             borderColor: "divider",
           }}
         >
@@ -152,13 +153,14 @@ function LandingPage() {
               className="mt-8"
             >
               <Button
-                component="a"
-                href="#contact"
                 variant="contained"
                 color="primary"
                 className="px-5 py-3 text-sm font-semibold normal-case"
+                onClick={() => {
+                  navigate({ to: "/login" });
+                }}
               >
-                Start onboarding
+                Start
               </Button>
               <Button
                 component="a"
