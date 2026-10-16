@@ -63,3 +63,49 @@ minimumReleaseAgeExclude:
   - '@typescript-eslint/utils@8.69.0'
   - '@typescript-eslint/visitor-keys@8.69.0'
   - typescript-eslint@8.69.0
+  - '@oxc-transform-react/binding-android-arm-eabi@0.154.0'
+  - '@oxc-transform-react/binding-android-arm64@0.154.0'
+  - '@oxc-transform-react/binding-darwin-arm64@0.154.0'
+  - '@oxc-transform-react/binding-darwin-x64@0.154.0'
+  - '@oxc-transform-react/binding-freebsd-x64@0.154.0'
+  - '@oxc-transform-react/binding-linux-arm-gnueabihf@0.154.0'
+  - '@oxc-transform-react/binding-linux-arm-musleabihf@0.154.0'
+  - '@oxc-transform-react/binding-linux-arm64-gnu@0.154.0'
+  - '@oxc-transform-react/binding-linux-arm64-musl@0.154.0'
+  - '@oxc-transform-react/binding-linux-ppc64-gnu@0.154.0'
+  - '@oxc-transform-react/binding-linux-riscv64-gnu@0.154.0'
+  - '@oxc-transform-react/binding-linux-riscv64-musl@0.154.0'
+  - '@oxc-transform-react/binding-linux-s390x-gnu@0.154.0'
+  - '@oxc-transform-react/binding-linux-x64-gnu@0.154.0'
+  - '@oxc-transform-react/binding-linux-x64-musl@0.154.0'
+  - '@oxc-transform-react/binding-openharmony-arm64@0.154.0'
+  - '@oxc-transform-react/binding-win32-arm64-msvc@0.154.0'
+  - '@oxc-transform-react/binding-win32-ia32-msvc@0.154.0'
+  - '@oxc-transform-react/binding-win32-x64-msvc@0.154.0'
+  - oxc-transform-react@0.154.0
+  - '@voidzero-dev/vite-plus-core@1.3.0'
+  - '@voidzero-dev/vite-plus-darwin-arm64@1.3.0'
+  - '@voidzero-dev/vite-plus-darwin-x64@1.3.0'
+  - '@voidzero-dev/vite-plus-linux-arm64-gnu@1.3.0'
+  - '@voidzero-dev/vite-plus-linux-arm64-musl@1.3.0'
+  - '@voidzero-dev/vite-plus-linux-x64-gnu@1.3.0'
+  - '@voidzero-dev/vite-plus-linux-x64-musl@1.3.0'
+  - '@voidzero-dev/vite-plus-win32-arm64-msvc@1.3.0'
+  - '@voidzero-dev/vite-plus-win32-x64-msvc@1.3.0'
+  - vite-plus@1.3.0
+permissions:
+  '@tanstack/devtools-vite':
+    skills: true
+skills:
+  dirs:
+    - .claude/skills
+catalog:
+  vite: npm:@voidzero-dev/vite-plus-core@1.3.0
+  vite-plus: 1.3.0
+overrides:
+  vite@*: 'catalog:'
+peerDependencyRules:
+  allowAny:
+    - vite
+  allowedVersions:
+    vite: '*'

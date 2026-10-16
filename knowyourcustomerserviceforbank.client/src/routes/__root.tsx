@@ -17,7 +17,7 @@ function RootComponent() {
     <React.Fragment>
       <TransitionGroup className="page-transition-group">
         <Slide
-          direction='up'
+          direction='right'
           key={location.pathname}
           timeout={{ enter: 500 }}
           unmountOnExit

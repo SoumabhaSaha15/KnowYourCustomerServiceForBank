@@ -1,7 +1,10 @@
 // import React from 'react';
 import base from "@/utils/axios-base";
+import { Login } from '@mui/icons-material'
+import { userLogin } from "@/validators/user";
 import { useForm } from '@tanstack/react-form';
 import { createFileRoute } from '@tanstack/react-router';
+import PasswordInputField from '@/components/PasswordInputField';
 import {
   Container,
   Box,
@@ -11,9 +14,6 @@ import {
   Stack,
   CircularProgress
 } from '@mui/material';
-import { Login } from '@mui/icons-material'
-import { userLogin } from "@/validators/user";
-import PasswordInputField from '@/shared/PasswordInputField';
 export const Route = createFileRoute('/login')({
   component: RouteComponent,
 })
@@ -24,7 +24,7 @@ function RouteComponent() {
     validators: { onChange: userLogin },
     onSubmit: async ({ value }) => {
       try {
-        base.post('/Auth', value).then(console.dir);
+        void base.post('/Auth', value).then(console.dir);
       } catch (error) {
         console.error(error);
       }
@@ -47,7 +47,7 @@ function RouteComponent() {
           onSubmit={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            form.handleSubmit();
+            void form.handleSubmit();
           }}
         >
           <Typography

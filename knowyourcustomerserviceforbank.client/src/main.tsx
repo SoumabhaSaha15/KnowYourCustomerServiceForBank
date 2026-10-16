@@ -1,6 +1,8 @@
 import './index.css';
 import theme from "@/config/theme";
 import { StrictMode } from 'react';
+import Pending from '@/shared/Pending';
+import NotFound from '@/shared/NotFound';
 import { routeTree } from './routeTree.gen';
 import { SnackbarProvider } from 'notistack';
 import { createRoot } from 'react-dom/client'
@@ -25,6 +27,8 @@ const queryClient = new QueryClient({
 
 const router = createRouter({
   routeTree,
+  defaultNotFoundComponent: NotFound,
+  defaultPendingComponent: Pending,
   context: queryClient,
   defaultViewTransition: true,
   defaultPreload: 'intent',

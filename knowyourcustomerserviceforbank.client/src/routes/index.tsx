@@ -157,7 +157,7 @@ function LandingPage() {
                 color="primary"
                 className="px-5 py-3 text-sm font-semibold normal-case"
                 onClick={() => {
-                  navigate({ to: "/login" });
+                  void navigate({ to: "/login" });
                 }}
               >
                 Start
