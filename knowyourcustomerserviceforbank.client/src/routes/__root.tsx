@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Slide } from '@mui/material';
+import { Zoom } from '@mui/material';
 import { TransitionGroup } from "react-transition-group";
 import { TanStackDevtools } from '@tanstack/react-devtools';
 import { FormDevtoolsPanel } from '@tanstack/react-form-devtools';
@@ -16,16 +16,15 @@ function RootComponent() {
   return (
     <React.Fragment>
       <TransitionGroup className="page-transition-group">
-        <Slide
-          direction='right'
+        <Zoom
           key={location.pathname}
-          timeout={{ enter: 500 }}
+          timeout={{ enter: 500, exit: 500 }}
           unmountOnExit
         >
           <div>
             <Outlet />
           </div>
-        </Slide>
+        </Zoom>
       </TransitionGroup>
       <TanStackDevtools plugins={[
         {
